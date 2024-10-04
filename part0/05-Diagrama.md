@@ -33,11 +33,4 @@ participant server
 
     Note left of server: The server responds with the HTTP status code 404.
 
-    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
-    activate server
-    server-->>browser: HTTP 201 Created
-    deactivate server
-
-    Note left of server: The server responds with the HTTP status code 201 and the browser does not reload the page.
-
 :::
