@@ -51,15 +51,21 @@ export default function App() {
       <Button action={onClickNeutral} text={"Nuetral"} />
       <Button action={onClickBad} text={"Bad"} />
       <h2>Statistics</h2>
-      <Statistics name={"Good"} num={good} />
-      <Statistics name={"Neutral"} num={neutral} />
-      <Statistics name={"Bad"} num={bad} />
-      <Statistics name={"All"} num={all} />
-      <Statistics name={"Average"} num={average} />
-      <Statistics
-        name={"Positive"}
-        num={((good / all) * 100).toFixed(2) + "%"}
-      />
+      {all ? (
+        <div>
+          <Statistics name={"Good"} num={good} />
+          <Statistics name={"Neutral"} num={neutral} />
+          <Statistics name={"Bad"} num={bad} />
+          <Statistics name={"All"} num={all} />
+          <Statistics name={"Average"} num={average} />
+          <Statistics
+            name={"Positive"}
+            num={((good / all) * 100).toFixed(2) + "%"}
+          />
+        </div>
+      ) : (
+        <p>No feedback given</p>
+      )}
     </div>
   );
 }
