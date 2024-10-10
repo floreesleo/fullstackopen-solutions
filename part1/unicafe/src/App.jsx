@@ -5,7 +5,7 @@ const Button = ({ action, text }) => {
   return <button onClick={action}>{text}</button>;
 };
 
-const CommentStats = ({ name, num }) => (
+const Statistics = ({ name, num }) => (
   <div>
     {name}: {num}
   </div>
@@ -51,12 +51,12 @@ export default function App() {
       <Button action={onClickNeutral} text={"Nuetral"} />
       <Button action={onClickBad} text={"Bad"} />
       <h2>Statistics</h2>
-      <CommentStats name={"Good"} num={good} />
-      <CommentStats name={"Neutral"} num={neutral} />
-      <CommentStats name={"Bad"} num={bad} />
-      <CommentStats name={"All"} num={all} />
-      <CommentStats name={"Average"} num={average} />
-      <CommentStats
+      <Statistics name={"Good"} num={good} />
+      <Statistics name={"Neutral"} num={neutral} />
+      <Statistics name={"Bad"} num={bad} />
+      <Statistics name={"All"} num={all} />
+      <Statistics name={"Average"} num={average} />
+      <Statistics
         name={"Positive"}
         num={((good / all) * 100).toFixed(2) + "%"}
       />
