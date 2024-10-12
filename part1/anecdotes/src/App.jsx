@@ -13,15 +13,28 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [items, setItems] = useState([1, 3, 4, 2, 5, 2, 0, 7]);
 
   const randomAnecdote = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length);
     setSelected(randomIndex);
   };
 
+  const voteAnecdote = () => {
+    const copy = [...items];
+    console.log("Arreglo de la copia: ", copy);
+
+    copy[selected] += 1;
+    console.log("Arreglo copy después de sumar: ", copy);
+
+    setItems(copy);
+  };
+
   return (
     <div>
       <p>{anecdotes[selected]}</p>
+      <p>has {items[selected]} votes</p>
+      <button onClick={voteAnecdote}>Vote</button>
       <button onClick={randomAnecdote}>Next anecdote</button>
     </div>
   );
