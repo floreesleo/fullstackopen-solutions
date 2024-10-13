@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const App = () => {
   const anecdotes = [
@@ -14,6 +14,7 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [items, setItems] = useState([1, 3, 4, 2, 5, 2, 0, 7]);
+  const [max, setMax] = useState([0, 0]);
 
   const randomAnecdote = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length);
@@ -22,20 +23,37 @@ const App = () => {
 
   const voteAnecdote = () => {
     const copy = [...items];
-    console.log("Arreglo de la copia: ", copy);
+    // console.log("Arreglo de la copia: ", copy);
 
     copy[selected] += 1;
-    console.log("Arreglo copy después de sumar: ", copy);
+    // console.log("Arreglo copy después de sumar: ", copy);
 
     setItems(copy);
   };
 
+  const mostVotes = () => {
+    const maxValue = Math.max(...items);
+    const maxIndex = items.indexOf(maxValue);
+
+    // console.log("Numero más alto: ", maxValue);
+    // console.log("Indice del más alto: ", maxIndex);
+    setMax([anecdotes[maxIndex], maxValue]);
+  };
+
+  useEffect(() => {
+    mostVotes();
+  }, [items]);
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {items[selected]} votes</p>
       <button onClick={voteAnecdote}>Vote</button>
       <button onClick={randomAnecdote}>Next anecdote</button>
+      <h2>Anecdote with most votes</h2>
+      <p>{max[0]}</p>
+      <p>has {max[1]} votes</p>
     </div>
   );
 };
