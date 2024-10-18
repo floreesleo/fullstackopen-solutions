@@ -6,9 +6,26 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    setPersons([...persons, { name: newName }]);
+
+    console.log("Before creating new person: ", persons);
+
+    if (newName === "") {
+      alert("Please enter a name");
+      return;
+    }
+
+    for (let i = 0; i < persons.length; i++) {
+      if (persons[i].name.toLowerCase() === newName.toLowerCase()) {
+        alert(`${newName} already exists`);
+        return;
+      }
+    }
+
+    const newPersons = [...persons, { name: newName }];
+    setPersons(newPersons);
     setNewName("");
-    // console.log(persons);
+
+    console.log("After creating new person: ", newPersons);
   };
 
   return (
