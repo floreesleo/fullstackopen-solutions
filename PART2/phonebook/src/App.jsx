@@ -1,15 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonsForm from "./components/PersonsForm";
 import Persons from "./components/Persons";
+import axios from "axios";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterText, setFilter] = useState("");
@@ -17,7 +13,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
 
-    console.log("Before creating new person: ", persons);
+    // console.log("Before creating new person: ", persons);
 
     if (newName === "") {
       alert("Please enter a name");
@@ -31,12 +27,16 @@ const App = () => {
       }
     }
 
-    const newPersons = [...persons, { name: newName, number: newNumber }];
-    setPersons(newPersons);
+    const newPersons = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1,
+    };
+    setPersons(persons.concat(newPersons));
     setNewName("");
     setNewNumber("");
 
-    console.log("After creating new person: ", newPersons);
+    // console.log("After creating new person: ", newPersons);
   };
 
   const handleFilter = (event) => {
@@ -56,6 +56,14 @@ const App = () => {
       person.name.toLowerCase().includes(filterText.toLowerCase()) ||
       person.number.includes(filterText)
   );
+
+  const hook = () => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+    });
+  };
+
+  useEffect(hook, []);
 
   return (
     <div>
