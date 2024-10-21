@@ -15,5 +15,17 @@ export default function App() {
   useEffect(hook, []);
   console.log("render", notes.length, "notes");
 
-  return <div>App</div>;
+  return (
+    <div>
+      <h1>Notes</h1>
+      <ul>
+        {notes.map((note) => (
+          <li key={note.id}>
+            {note.content}
+            {note.important && <span> (important)</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
