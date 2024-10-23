@@ -19,6 +19,16 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
+    },
+    {
+      "id": 5,
+      "name": "Leonardo Flores",
+      "number": "665465465"
+    },
+    {
+      "id": 6,
+      "name": "John Doe",
+      "number": "541-3215422"
     }
   ]
 }

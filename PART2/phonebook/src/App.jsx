@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonsForm from "./components/PersonsForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,13 +10,15 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filterText, setFilter] = useState("");
 
+  useEffect(() => {
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+  }, []);
+
   const addPerson = (event) => {
     event.preventDefault();
 
-    // console.log("Before creating new person: ", persons);
-
-    if (newName === "") {
-      alert("Please enter a name");
+    if (newName === "" || newNumber === "") {
+      alert("Please complete the form");
       return;
     }
 
@@ -27,17 +29,24 @@ const App = () => {
       }
     }
 
-    const newPersons = {
+    const personObject = {
       name: newName,
       number: newNumber,
       id: persons.length + 1,
     };
-    setPersons(persons.concat(newPersons));
-    setNewName("");
-    setNewNumber("");
 
-    // console.log("After creating new person: ", newPersons);
+    personService.add(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setNewNumber("");
+    });
   };
+
+  const filteredPersons = persons.filter(
+    (person) =>
+      person.name.toLowerCase().includes(filterText.toLowerCase()) ||
+      (person.number && person.number.includes(filterText))
+  );
 
   const handleFilter = (event) => {
     setFilter(event.target.value);
@@ -50,20 +59,6 @@ const App = () => {
   const handleNumber = (event) => {
     setNewNumber(event.target.value);
   };
-
-  const filteredPersons = persons.filter(
-    (person) =>
-      person.name.toLowerCase().includes(filterText.toLowerCase()) ||
-      person.number.includes(filterText)
-  );
-
-  const hook = () => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
-  };
-
-  useEffect(hook, []);
 
   return (
     <div>
