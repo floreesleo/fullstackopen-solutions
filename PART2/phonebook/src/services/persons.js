@@ -15,6 +15,14 @@ const add = (personObject) => {
   });
 };
 
+const update = (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject);
+  return request.then((response) => {
+    console.log("Updated person: ", response.data);
+    return response.data;
+  });
+};
+
 const erase = (id) => {
   const request = axios.delete(`${baseUrl}/${id}`);
   return request.then((response) => {
@@ -26,5 +34,6 @@ const erase = (id) => {
 export default {
   getAll,
   add,
+  update,
   erase,
 };

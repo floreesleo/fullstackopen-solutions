@@ -22,13 +22,6 @@ const App = () => {
       return;
     }
 
-    for (let i = 0; i < persons.length; i++) {
-      if (persons[i].name.toLowerCase() === newName.toLowerCase()) {
-        alert(`${newName} already exists`);
-        return;
-      }
-    }
-
     const idString = (persons.length + 1).toString();
 
     const personObject = {
@@ -36,6 +29,38 @@ const App = () => {
       number: newNumber,
       id: idString,
     };
+
+    const personExists = persons.find((person) => {
+      return (
+        person.name.toLowerCase() === newName.toLowerCase() &&
+        person.number !== newNumber
+      );
+    });
+
+    if (
+      personExists &&
+      window.confirm(
+        `${personExists.name} is already added to phonebook, replace the old number with a new one?`
+      )
+    ) {
+      const changedPerson = { ...personExists, number: newNumber };
+      personService
+        .update(personExists.id, changedPerson)
+        .then((returnedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== personExists.id ? person : returnedPerson
+            )
+          );
+          setNewName("");
+          setNewNumber("");
+        });
+    } else if (personExists) {
+      alert(`The new number was not added to ${personExists.name}`);
+      setNewName("");
+      setNewNumber("");
+      return;
+    }
 
     personService.add(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));

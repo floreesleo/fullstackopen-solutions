@@ -11,14 +11,20 @@ export default function PersonsForm({
       <h3>add a new</h3>
       <div>
         name:{" "}
-        <input value={newName} onChange={handleName} placeholder="John Doe" />
+        <input
+          type="text"
+          value={newName}
+          onChange={handleName}
+          placeholder="John Doe"
+        />
       </div>
       <div>
         number:{" "}
         <input
+          type="number"
           value={newNumber}
           onChange={handleNumber}
-          placeholder="963-156-1234"
+          placeholder="01-12345678"
         />
       </div>
       <div>
