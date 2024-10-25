@@ -29,10 +29,12 @@ const App = () => {
       }
     }
 
+    const idString = (persons.length + 1).toString();
+
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
+      id: idString,
     };
 
     personService.add(personObject).then((returnedPerson) => {
@@ -42,11 +44,29 @@ const App = () => {
     });
   };
 
-  const filteredPersons = persons.filter(
-    (person) =>
-      person.name.toLowerCase().includes(filterText.toLowerCase()) ||
-      (person.number && person.number.includes(filterText))
-  );
+  const deletePerson = (id) => {
+    const person = persons.find((person) => person.id === id);
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .erase(id)
+        .then((deletedID) => {
+          setPersons(persons.filter((p) => p.id !== deletedID));
+        })
+        .catch((error) => {
+          alert("Error deleting the person.");
+          console.error(error);
+        });
+    }
+  };
+
+  const filteredPersons = Array.isArray(persons)
+    ? persons.filter(
+        (person) =>
+          person.name.toLowerCase().includes(filterText.toLowerCase()) ||
+          (person.number && person.number.includes(filterText))
+      )
+    : [];
 
   const handleFilter = (event) => {
     setFilter(event.target.value);
@@ -71,7 +91,8 @@ const App = () => {
         handleName={handleName}
         handleNumber={handleNumber}
       />
-      <Persons filteredPersons={filteredPersons} />
+      <h3>Numbers</h3>
+      <Persons filteredPersons={filteredPersons} onDelete={deletePerson} />
     </div>
   );
 };

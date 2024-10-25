@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 export default function PersonsForm({
   addPerson,
   newName,
