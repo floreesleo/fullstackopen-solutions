@@ -3,12 +3,14 @@
 
 import { useState, useEffect } from "react";
 import Note from "./components/Note";
+import Notification from "./components/Notification";
 import noteService from "./services/notes";
 
 export default function App() {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("Error message");
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
@@ -48,14 +50,31 @@ export default function App() {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
       .catch((error) => {
-        alert(`the note ${note.content} was already  deleted from the server`);
-        setNotes(notes.filter((n) => n.id !== id));
+        setErrorMessage(`Note ${note.content} was already removed from server`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
       });
+  };
+
+  const Footer = () => {
+    const footerStyle = {
+      color: "grey",
+      fontStyle: "italic",
+      fontSize: 16,
+    };
+    return (
+      <div style={footerStyle}>
+        <br />
+        <em>Note app, Fullstack Open Course, 2024</em>
+      </div>
+    );
   };
 
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? "important" : "all"}
@@ -74,6 +93,7 @@ export default function App() {
         <input type="text" value={newNote} onChange={handleNoteChange} />
         <button type="submit">Add</button>
       </form>
+      <Footer />
     </div>
   );
 }
