@@ -10,7 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterText, setFilter] = useState("");
-  const [message, setMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
+  const [type, setType] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -33,14 +34,12 @@ const App = () => {
     };
 
     const personExists = persons.find((person) => {
-      return (
-        person.name.toLowerCase() === newName.toLowerCase() &&
-        person.number !== newNumber
-      );
+      return person.name.toLowerCase() === newName.toLowerCase();
     });
 
     if (
       personExists &&
+      personExists.number !== newNumber &&
       window.confirm(
         `${personExists.name} is already added to phonebook, replace the old number with a new one?`
       )
@@ -57,15 +56,25 @@ const App = () => {
           setNewName("");
           setNewNumber("");
 
-          setMessage(`${personExists.name} updated the number`);
+          setNotification(`${personExists.name} updated the number`);
+          setType("success");
           setTimeout(() => {
-            setMessage(null);
+            setNotification(null);
+            setType(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          console.error(error);
+          setNotification(
+            `Information of ${personExists.name} has already been removed from the server.`
+          );
+          setType("error");
+
+          setTimeout(() => {
+            setNotification(null);
+            setType(null);
           }, 5000);
         });
-    } else if (personExists) {
-      alert(`The new number was not added to ${personExists.name}`);
-      setNewName("");
-      setNewNumber("");
       return;
     }
 
@@ -74,9 +83,11 @@ const App = () => {
       setNewName("");
       setNewNumber("");
 
-      setMessage(`Added ${returnedPerson.name}`);
+      setNotification(`Added ${returnedPerson.name}`);
+      setType("success");
       setTimeout(() => {
-        setMessage(null);
+        setNotification(null);
+        setType(null);
       }, 5000);
     });
   };
@@ -91,8 +102,14 @@ const App = () => {
           setPersons(persons.filter((p) => p.id !== deletedID));
         })
         .catch((error) => {
-          alert("Error deleting the person.");
           console.error(error);
+          setNotification("Error deleting the person.");
+          setType("error");
+
+          setTimeout(() => {
+            setNotification(null);
+            setType(null);
+          }, 5000);
         });
     }
   };
@@ -120,7 +137,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={notification} type={type} />
       <Filter filterText={filterText} handleFilter={handleFilter} />
       <PersonsForm
         addPerson={addPerson}
