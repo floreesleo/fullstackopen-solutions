@@ -19,6 +19,10 @@ export default function App() {
         const data = response.data;
         // console.log("Datos obtenidos: ", data[0].name.common);
         setAllCountries(data);
+      })
+      .catch((error) => {
+        setError("Ocurrió un error al obtener los datos.");
+        console.error(error);
       });
   }, []);
 
@@ -38,6 +42,7 @@ export default function App() {
     if (matches.length >= 10) {
       setError("Too many matches, specify another filter.");
       setFilteredCountries([]);
+      setSelectedCountry(null);
       return;
     }
 
@@ -68,6 +73,12 @@ export default function App() {
     setError(null);
   }, [searchText, allCountries]);
 
+  const showCountry = (country) => {
+    // console.log("País seleccionado: ", country);
+    setSelectedCountry(country);
+    setFilteredCountries([]);
+  };
+
   return (
     <div>
       <label htmlFor="find">Find countries: </label>
@@ -75,11 +86,12 @@ export default function App() {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <ul>
-        {filteredCountries.map((country) => (
-          <li key={country.cca3}>{country.name.common}</li>
-        ))}
-      </ul>
+      {filteredCountries.map((country) => (
+        <div key={country.cca3}>
+          {country.name.common}{" "}
+          <button onClick={() => showCountry(country)}>show</button>
+        </div>
+      ))}
 
       {selectedCountry && (
         <div>
