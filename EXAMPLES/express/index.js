@@ -1,6 +1,12 @@
 const express = require("express");
-const app = express();
+const morgan = require("morgan");
+const cors = require("cors");
 
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(morgan("tiny"));
+app.use(cors());
 app.use(express.json());
 
 let notes = [
@@ -22,7 +28,7 @@ let notes = [
 ];
 
 app.get("/", (request, response) => {
-  response.send("<h1>Hello World!</h1>");
+  response.send("<h1>Home Page</h1>");
 });
 
 app.get("/api/notes", (request, response) => {
@@ -34,17 +40,18 @@ app.get("/api/notes/:id", (request, response) => {
   const note = notes.find((note) => note.id === id);
 
   if (!note) {
-    response.status(404).send("<h1>Not Found</h1>").end();
+    response.status(404).send("<h1>Note Not Found</h1>").end();
   }
 
   response.json(note);
 });
 
 app.delete("/api/notes/:id", (request, response) => {
-  const id = request.params.id;
+  const id = Number(request.params.id);
 
-  const note = notes.filter((note) => note.id !== id);
-  response.status(204).end();
+  const newNotes = notes.filter((note) => note.id !== id);
+  // response.status(204).end();
+  response.json(newNotes).status(204).end();
 });
 
 const generateId = () => {
@@ -72,10 +79,6 @@ app.post("/api/notes", (request, response) => {
   response.json(note);
 });
 
-const PORT = 3001;
-
 app.listen(PORT, () => {
-  console.log(
-    `Express server is running on PORT: http://localhost:${PORT}\nWant to see the notes?, go to: http://localhost:${PORT}/api/notes`
-  );
+  console.log(`Express server is running on PORT: http://localhost:${PORT}`);
 });
