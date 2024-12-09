@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 
-const baseUrl = "http://localhost:3001/persons";
+const baseUrl = "http://localhost:3001/api/persons";
 
 const getAll = () => {
   const request = axios.get(baseUrl);
@@ -10,7 +11,7 @@ const getAll = () => {
 const add = (personObject) => {
   const request = axios.post(baseUrl, personObject);
   return request.then((response) => {
-    console.log("Created person: ", response.data);
+    // console.log("Created person: ", response.data);
     return response.data;
   });
 };
@@ -18,7 +19,7 @@ const add = (personObject) => {
 const update = (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject);
   return request.then((response) => {
-    console.log("Updated person: ", response.data);
+    // console.log("Updated person: ", response.data);
     return response.data;
   });
 };
@@ -26,7 +27,7 @@ const update = (id, newObject) => {
 const erase = (id) => {
   const request = axios.delete(`${baseUrl}/${id}`);
   return request.then((response) => {
-    console.log("Deleted person: ", response.data);
+    // console.log("Deleted person: ", response.data);
     return id;
   });
 };

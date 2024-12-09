@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import Filter from "./components/Filter";
-import PersonsForm from "./components/PersonsForm";
-import Persons from "./components/Persons";
-import Notification from "./components/Notification";
+import { Filter, Notification, Persons, PersonsForm } from "./components";
 import personService from "./services/persons";
 
 const App = () => {
@@ -78,22 +75,27 @@ const App = () => {
       return;
     }
 
-    personService.add(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
+    personService
+      .add(personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
 
-      setNotification(`Added ${returnedPerson.name}`);
-      setType("success");
-      setTimeout(() => {
-        setNotification(null);
-        setType(null);
-      }, 5000);
-    });
+        setNotification(`Added ${returnedPerson.name}`);
+        setType("success");
+        setTimeout(() => {
+          setNotification(null);
+          setType(null);
+        }, 5000);
+      })
+      .catch((error) => {
+        console.error("Error capturado: ", error);
+      });
   };
 
   const deletePerson = (id) => {
-    const person = persons.find((person) => person.id === id);
+    const person = persons.find((p) => p.id === id);
 
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
