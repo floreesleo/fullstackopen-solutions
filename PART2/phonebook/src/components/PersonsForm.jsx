@@ -21,7 +21,7 @@ export default function PersonsForm({
       <div>
         number:{" "}
         <input
-          type="number"
+          type="text"
           value={newNumber}
           onChange={handleNumber}
           placeholder="01-12345678"
