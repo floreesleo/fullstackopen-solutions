@@ -22,38 +22,68 @@ const App = () => {
       return;
     }
 
-    const idString = (persons.length + 1).toString();
-
-    const personObject = {
-      name: newName,
-      number: newNumber,
-      id: idString,
-    };
-
     const personExists = persons.find((person) => {
       return person.name.toLowerCase() === newName.toLowerCase();
     });
 
-    if (
-      personExists &&
-      personExists.number !== newNumber &&
-      window.confirm(
-        `${personExists.name} is already added to phonebook, replace the old number with a new one?`
-      )
-    ) {
-      const changedPerson = { ...personExists, number: newNumber };
+    if (personExists) {
+      if (
+        personExists.number !== newNumber &&
+        window.confirm(
+          `${personExists.name} is already added to phonebook, replace the old number with the new one?`
+        )
+      ) {
+        const changedPerson = { ...personExists, number: newNumber };
+        personService
+          .update(personExists.id, changedPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== personExists.id ? person : returnedPerson
+              )
+            );
+            setNewName("");
+            setNewNumber("");
+
+            setNotification(`${personExists.name} updated the number`);
+            setType("success");
+            setTimeout(() => {
+              setNotification(null);
+              setType(null);
+            }, 5000);
+          })
+          .catch((error) => {
+            console.error(error);
+            setNotification(
+              `Information of ${personExists.name} has already been removed from the server.`
+            );
+            setType("error");
+
+            setTimeout(() => {
+              setNotification(null);
+              setType(null);
+            }, 5000);
+          });
+      } else {
+        // Si cancela la ventana de actualización
+        setNewName("");
+        setNewNumber("");
+      }
+    } else {
+      // Código para crear una nueva persona
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+      };
+
       personService
-        .update(personExists.id, changedPerson)
+        .add(newPerson)
         .then((returnedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id !== personExists.id ? person : returnedPerson
-            )
-          );
+          setPersons(persons.concat(returnedPerson));
           setNewName("");
           setNewNumber("");
 
-          setNotification(`${personExists.name} updated the number`);
+          setNotification(`Added ${newName}`);
           setType("success");
           setTimeout(() => {
             setNotification(null);
@@ -62,9 +92,7 @@ const App = () => {
         })
         .catch((error) => {
           console.error(error);
-          setNotification(
-            `Information of ${personExists.name} has already been removed from the server.`
-          );
+          setNotification(error.message);
           setType("error");
 
           setTimeout(() => {
@@ -72,26 +100,7 @@ const App = () => {
             setType(null);
           }, 5000);
         });
-      return;
     }
-
-    personService
-      .add(personObject)
-      .then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-
-        setNotification(`Added ${returnedPerson.name}`);
-        setType("success");
-        setTimeout(() => {
-          setNotification(null);
-          setType(null);
-        }, 5000);
-      })
-      .catch((error) => {
-        console.error("Error capturado: ", error);
-      });
   };
 
   const deletePerson = (id) => {
