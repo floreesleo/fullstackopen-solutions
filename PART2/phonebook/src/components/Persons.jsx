@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 export default function Persons({ filteredPersons, onDelete }) {
+  const tableStyle = {
+    width: "50%",
+  };
   return (
-    <table>
+    <table style={tableStyle}>
       <tbody>
         <tr>
           <td>ID</td>
